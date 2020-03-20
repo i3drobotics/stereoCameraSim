@@ -1,0 +1,4 @@
+[submodule "coppeliaSim"]
+	path = coppeliaSim
+	url = https://github.com/i3drobotics/coppeliaSim.git
+	branch = master
