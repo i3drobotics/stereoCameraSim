@@ -17,6 +17,7 @@ resolution=[resolution[0]*image_scale,resolution[1]*image_scale]
 # adjust pixel pitch to keep the same FOV
 pixel_pitch=pixel_pitch/image_scale
 
+# create StereoCameraSim object with camera parameters
 scs = StereoCameraSim(
     resolution=resolution,
     pixel_pitch=pixel_pitch,
@@ -24,13 +25,22 @@ scs = StereoCameraSim(
     view_range=view_range,
     baseline=baseline
 )
+# generate stereo camera viewing angle CAD for loading in simulation
 scs.generateStereoCam()
-scs.runSimulation(close_on_stop=True)
+# run simulation using generated CAD and camera parameters
+scs.runSimulation(
+    simulation_filepath='../../simulations/StereoCameraSimulation.ttt',
+    close_on_stop=True,
+    hide_simulation=False,
+)
+# generate 3D from simulated stereo camera
 scs.runStereo3D()
 while(True):
     exit_code = scs.nextStereo3DFrame()
     if (exit_code == scs.s3D.EXIT_CODE_QUIT):
         break
-    res,pos,ori = scs.getCameraPosition()
-    if (res):
+    if (exit_code == scs.s3D.EXIT_CODE_FAILED_TO_GRAB_3D):
+        time.sleep(1)
+    else:
+        pos,ori = scs.getCameraPosition()
         print(pos,ori)

@@ -42,16 +42,8 @@ class StereoCameraSim:
             connected = self.s3D.connect()
             time.sleep(1)
 
-        vrep_connection = self.s3D.stereo_camera.stcam.vrep_connection
-        camera_object_handle = self.s3D.stereo_camera.stcam.camera.left_handle
-        vrep_connection.prep_object_pose(camera_object_handle, -1)
-
     def getCameraPosition(self):
-        vrep_connection = self.s3D.stereo_camera.stcam.vrep_connection
-        camera_object_handle = self.s3D.stereo_camera.stcam.camera.left_handle
-
-        res,pos,ori = vrep_connection.get_object_pose(camera_object_handle, -1)
-        return res,pos,ori
+        return self.s3D.stereo_camera.stcam.camera.get_last_pose()
 
     def nextStereo3DFrame(self):
         exit_code = self.s3D.run_frame(self.folder)
@@ -101,7 +93,7 @@ class StereoCameraSim:
         FOV = [FOVx,FOVy]
         return FOV
 
-    def runSimulation(self,close_on_stop=False):
+    def runSimulation(self,simulation_filepath='../../simulations/StereoCameraSimulation.ttt',close_on_stop=False,hide_simulation=False):
         resolution_str = "{},{}".format(self.resolution[0],self.resolution[1])
         fov_str = "{}".format(self.FOV[0])
         range_str = "{}".format(self.view_range)
@@ -116,9 +108,11 @@ class StereoCameraSim:
                     '-Gfov={}'.format(fov_str),
                     '-Gview_range={}'.format(range_str),
                     '-Gbaseline={}'.format(baseline_str),
-                    '../../simulations/StereoCameraSimulation.ttt']
+                    simulation_filepath]
         if (close_on_stop):
             cmd.append('-q')
+        if (hide_simulation):
+            cmd.append('-h')
         cwd = os.getcwd() + "\coppeliaSim\CoppeliaSimEdu"
 
         proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
