@@ -1,1 +1,0 @@
-openscad GenerateStereoView.scad -o StereoViewFull.stl
