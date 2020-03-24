@@ -14,6 +14,12 @@ git clone -b [OS] https://github.com/i3drobotics/coppeliaSim
 ```
 Where OS is 'windows' or 'linux' depending on your operating system.
 
+Download PyRep submodule (Linux only)
+```
+git clone https://github.com/stepjam/PyRep.git
+```
+Will update this package to use PyRep on windows when this is avaiable as remoteAPI is slower
+
 Download and install python 3.6+ from [here](https://www.python.org/downloads/)
 
 Install Stereo3D pip package
