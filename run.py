@@ -2,6 +2,7 @@ import os
 import subprocess
 import time
 from scripts.stereoCameraSim import *
+import platform
 
 resolution=[2448,2048]
 pixel_pitch=0.00000345
@@ -27,9 +28,10 @@ scs = StereoCameraSim(
 )
 # generate stereo camera viewing angle CAD for loading in simulation
 scs.generateStereoCam()
+
 # run simulation using generated CAD and camera parameters
 scs.runSimulation(
-    simulation_filepath='../../simulations/StereoCameraSimulation.ttt',
+    simulation_filepath=os.path.join("..","simulations","StereoCameraSimulation.ttt"),
     close_on_stop=True,
     hide_simulation=False,
 )

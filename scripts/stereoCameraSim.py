@@ -4,11 +4,15 @@ import os
 import subprocess
 import math
 import time
+import platform
+
+if platform.system() == "Linux":
+    from pyrep import PyRep
 
 class StereoCameraSim:
     def __init__(self,api_port=20000,
-                stereo_view_stl=os.getcwd() + "\simulations\StereoView\StereoView.stl",
-                stereo_overlap_stl=os.getcwd() + "\simulations\StereoView\StereoOverlap.stl",
+                stereo_view_stl=os.path.join(os.getcwd(),"simulations","StereoView","StereoView.stl"),
+                stereo_overlap_stl=os.path.join(os.getcwd(),"simulations","StereoView","StereoOverlap.stl"),
                 resolution=[2448,2048],pixel_pitch=0.00000345,focal_length=0.016,view_range=2.5,baseline=0.3):
         self.api_port = api_port
         self.stereo_view_stl = stereo_view_stl
@@ -28,8 +32,8 @@ class StereoCameraSim:
         # define inout folder
         self.folder = "data/"
         # define calibration files for left and right image
-        left_cal_file = self.folder + camera_name +"_left.yaml"
-        right_cal_file = self.folder + camera_name +"_right.yaml"
+        left_cal_file = os.path.join(self.folder, camera_name +"_left.yaml")
+        right_cal_file = os.path.join(self.folder, camera_name +"_right.yaml")
         # get calibration from yaml files
         stcal = StereoCalibration()
         stcal.get_cal_from_yaml(left_cal_file,right_cal_file)
@@ -66,9 +70,19 @@ class StereoCameraSim:
                 '-D', 'range={}'.format(range_str),
                 '-D', 'baseline={}'.format(baseline_str),
                 '-D', 'overlap_only={}'.format(overlap_only_str)]
-        cwd = os.getcwd() + "\simulations\StereoView"
+        cwd = os.path.join(os.getcwd(),"simulations","StereoView")
 
-        proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+        print("cd " + cwd)
+
+        cmd_str = ""
+        for c in cmd:
+            cmd_str += c + " "
+        print(cmd_str)
+
+        if platform.system() == "Windows":
+            proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+        else:
+            proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True)
 
     def generateStereoCam(self):
         self.generateStereoView(self.stereo_view_stl,False)
@@ -93,13 +107,28 @@ class StereoCameraSim:
         FOV = [FOVx,FOVy]
         return FOV
 
-    def runSimulation(self,simulation_filepath='../../simulations/StereoCameraSimulation.ttt',close_on_stop=False,hide_simulation=False):
+    def runSimulationPyRep(self,simulation_filepath=os.path.join("simulations","StereoCameraSimulation.ttt"),close_on_stop=False,hide_simulation=False):
+        if platform.system() == "Linux":
+            pr = PyRep()
+            # Launch the application with a scene file in headless mode
+            pr.launch(simulation_filepath,headless=hide_simulation) 
+            pr.start()  # Start the simulation
+
+            # Do some stuff
+            #TODO add PyRep to Stereo3D and grab images directly (rather than with remote api)
+
+            pr.stop()  # Stop the simulation
+            pr.shutdown()  # Close the application
+        else:
+            print("PyRep only available on Linux")
+
+    def runSimulation(self,simulation_filepath=os.path.join("..","..","simulations","StereoCameraSimulation.ttt"),close_on_stop=False,hide_simulation=False):
         resolution_str = "{},{}".format(self.resolution[0],self.resolution[1])
         fov_str = "{}".format(self.FOV[0])
         range_str = "{}".format(self.view_range)
         baseline_str = "{}".format(self.baseline)
 
-        cmd = ['start', '/b', 'coppeliaSim','-s',
+        cmd = ['-s',
                     '-Gapi_port={}'.format(self.api_port),
                     '-Gstereo_view_stl={}'.format(self.stereo_view_stl),
                     '-Gstereo_overlap_stl={}'.format(self.stereo_overlap_stl),
@@ -109,10 +138,30 @@ class StereoCameraSim:
                     '-Gview_range={}'.format(range_str),
                     '-Gbaseline={}'.format(baseline_str),
                     simulation_filepath]
+
         if (close_on_stop):
             cmd.append('-q')
         if (hide_simulation):
             cmd.append('-h')
-        cwd = os.getcwd() + "\coppeliaSim\CoppeliaSimEdu"
 
-        proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+        if platform.system() == 'Windows':
+            cmd.insert(0, 'coppeliaSim')
+            cmd.insert(0, '/b')
+            cmd.insert(0, 'start ')
+
+        if platform.system() == 'Linux':
+            cmd.insert(0, os.getenv('COPPELIASIM_ROOT')+'/coppeliaSim.sh')
+            cmd.append('&')
+
+        cwd = os.path.join(os.getcwd(),"coppeliaSim")
+
+        print("cd " + cwd)
+        cmd_str = ""
+        for c in cmd:
+            cmd_str += c + " "
+        print(cmd_str)
+
+        if platform.system() == "Windows":
+            proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+        else:
+            proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, universal_newlines=True)

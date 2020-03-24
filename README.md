@@ -14,11 +14,30 @@ git clone -b [OS] https://github.com/i3drobotics/coppeliaSim
 ```
 Where OS is 'windows' or 'linux' depending on your operating system.
 
+Windows: add coppeliaSim install directory to the PATH environment variable (See [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/) for details on how to add a directory to the PATH environment variable)
+
+Linux: add coppeliaSim to bashrc
+```
+sudo gedit ~/.bashrc
+add this to the end --> export COPPELIASIM_ROOT=/PATH_TO_REPO/coppeliaSim
+```
+
 Download PyRep submodule (Linux only)
 ```
 git clone https://github.com/stepjam/PyRep.git
 ```
-Will update this package to use PyRep on windows when this is avaiable as remoteAPI is slower
+*PyRep is faster than using the remote api but is currently only available on Linux*
+
+*Will update this step with windows instructions once I figure how out to build pyrep for windows. For now the remote api will be used.*
+
+Install openscad </br>
+*Linux*
+```
+sudo apt-get install openscad
+```
+*Windows* </br>
+Download and install from here: https://www.openscad.org/downloads.html
+add openscad install directory to the PATH environment variable (See [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/) for details on how to add a directory to the PATH environment variable)
 
 Download and install python 3.6+ from [here](https://www.python.org/downloads/)
 
