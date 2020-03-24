@@ -2,3 +2,8 @@
 	path = coppeliaSim
 	url = https://github.com/i3drobotics/coppeliaSim.git
 	branch = master
+
+[submodule "PyRep"]
+	path = PyRep
+	url = https://github.com/stepjam/PyRep.git
+	branch = master
