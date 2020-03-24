@@ -5,5 +5,5 @@
 
 [submodule "PyRep"]
 	path = PyRep
-	url = https://github.com/stepjam/PyRep.git
+	url = https://github.com/i3drobotics/PyRep.git
 	branch = master
