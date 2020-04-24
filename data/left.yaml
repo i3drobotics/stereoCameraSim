@@ -1,0 +1,29 @@
+%YAML:1.0
+---
+image_width: 2448
+image_height: 1024
+camera_name: leftCamera
+camera_matrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 2.4637681159420295e+03, 0., 1224., 0., 1.0305958132045091e+03,
+       512., 0., 0., 1. ]
+distortion_model: plumb_bob
+distortion_coefficients: !!opencv-matrix
+   rows: 5
+   cols: 1
+   dt: i
+   data: [ 0, 0, 0, 0, 0 ]
+rectification_matrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: i
+   data: [ 1, 0, 0, 0, 1, 0, 0, 0, 1 ]
+projection_matrix: !!opencv-matrix
+   rows: 3
+   cols: 4
+   dt: d
+   data: [ 2.4637681159420295e+03, 0., 1224., 0., 0.,
+       1.0305958132045091e+03, 512., 0., 0., 0., 1., 0. ]
+rms_error: ""

@@ -1,17 +1,30 @@
 import os
 import subprocess
 import time
-from scripts.stereoCameraSim import *
+from modules.stereoCameraSim import *
 import platform
 
+'''
 resolution=[2448,2048]
 pixel_pitch=0.00000345
 focal_length=0.016
-view_range=100
+view_range=200
 baseline=0.3
+'''
+
+resolution=[2448,1024]
+pixel_pitch=0.00000345
+focal_length=0.0085
+view_range=200
+baseline=2
+
+position=[2,1,5]
+orientation=[0,5,-90]
+camera_name="StereoCamera"
+api_port=20000
 
 # scale image for better speed (resolution > 500x500 will be slow)
-image_scale = 0.25
+image_scale = 1
 
 # scale resolution
 resolution=[resolution[0]*image_scale,resolution[1]*image_scale]
@@ -20,29 +33,19 @@ pixel_pitch=pixel_pitch/image_scale
 
 # create StereoCameraSim object with camera parameters
 scs = StereoCameraSim(
+    api_port=api_port,
+    camera_name=camera_name,
     resolution=resolution,
     pixel_pitch=pixel_pitch,
     focal_length=focal_length,
     view_range=view_range,
-    baseline=baseline
+    baseline=baseline,
+    position=position,
+    orientation=orientation,
+    stereo_view_stl=os.path.join(os.getcwd(),"data","View.stl"),
+    stereo_overlap_stl=os.path.join(os.getcwd(),"data","Overlap.stl"),
+    output_folder=os.path.join(os.getcwd(),"data")
 )
-# generate stereo camera viewing angle CAD for loading in simulation
-scs.generateStereoCam()
 
-# run simulation using generated CAD and camera parameters
-scs.runSimulation(
-    simulation_filepath=os.path.join("..","simulations","StereoCameraSimulation.ttt"),
-    close_on_stop=True,
-    hide_simulation=False,
-)
-# generate 3D from simulated stereo camera
-scs.runStereo3D()
-while(True):
-    exit_code = scs.nextStereo3DFrame()
-    if (exit_code == scs.s3D.EXIT_CODE_QUIT):
-        break
-    if (exit_code == scs.s3D.EXIT_CODE_FAILED_TO_GRAB_3D):
-        time.sleep(1)
-    else:
-        pos,ori = scs.getCameraPosition()
-        print(pos,ori)
+# run simulation (coppeliasim file must have 'StereoCameraModel' already imported)
+scs.run(simulation_filepath=os.path.join(os.getcwd(),"simulations","SimulationSceneBoats.ttt"))

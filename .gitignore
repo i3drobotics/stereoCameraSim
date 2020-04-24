@@ -1,1 +1,4 @@
-*.vscode/
+.vscode/*
+modules/__pycache__/*
+
+!.vscode/tasks.json
