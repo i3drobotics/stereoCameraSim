@@ -43,13 +43,14 @@ class StereoCameraSim:
 
         
         # setup inital matcher settings
+        '''
         matcher = cv2.StereoBM_create()
         default_min_disp = 1000
-        default_num_disparities = 18
+        default_num_disparities = 20
         default_block_size = 1
         default_uniqueness_ratio = 15
-        default_texture_threshold = 15
-        default_speckle_size = 30
+        default_texture_threshold = 60
+        default_speckle_size = 0
         default_speckle_range = 500
         calc_block = (2 * default_block_size + 5)
         matcher.setBlockSize(calc_block)
@@ -59,8 +60,9 @@ class StereoCameraSim:
         matcher.setTextureThreshold(default_texture_threshold)
         matcher.setSpeckleWindowSize(default_speckle_size)
         matcher.setSpeckleRange(default_speckle_range)
+        '''
 
-        #matcher = "BM"
+        matcher = "BM"
 
         # setup Stereo3D
         self.s3D = Stereo3D(stcap,stcal,matcher)

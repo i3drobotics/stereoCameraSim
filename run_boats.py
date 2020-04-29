@@ -4,22 +4,14 @@ import time
 from modules.stereoCameraSim import *
 import platform
 
-'''
-resolution=[2448,2048]
-pixel_pitch=0.00000345
-focal_length=0.016
-view_range=200
-baseline=0.3
-'''
-
 resolution=[2448,1024]
 pixel_pitch=0.00000345
 focal_length=0.0085
 view_range=200
 baseline=2
 
-position=[2,1,5]
-orientation=[0,5,-90]
+position=[2,2,0.1]
+orientation=[0,-5,-90]
 camera_name="StereoCamera"
 api_port=20000
 
